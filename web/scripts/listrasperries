@@ -1,0 +1,29 @@
+#!/bin/bash
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+hname=$(hostname)
+#hname="raspberrypi"
+
+LAN_DEVICE=wlan0
+PORT=2219
+
+# do the trick with xargs to get rid of the ending blank
+MY_IP=$(hostname -I|xargs)
+
+#echo "my ip $MY_IP"
+SUBNET=$(ip route |grep ${LAN_DEVICE} | grep -v "^default" | awk '{print $1}')
+#echo "use subnet $SUBNET"
+
+if [[ $hname != "raspberrypi" ]];
+then
+	sleep 10
+	# only a dummy script
+	echo "192.168.0.17"
+	echo "192.168.0.19"
+	exit 0
+fi
+
+nmap --max-retries 50 -v -p ${PORT} ${SUBNET} |grep "Discovered open port ${PORT}" | awk '{print $6}' | while read ip
+do
+        echo $ip
+done

@@ -1,0 +1,33 @@
+#!/bin/bash
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+hname=$(hostname)
+#hname="raspberrypi"
+
+LAN_DEVICE=wlan0
+PORT=2219
+SETTINGS=${DIR}/../settings/settings.json
+SYNCSOURCE=/var/www/
+SYNCDESTINATION=/var/www/
+
+SSH_USER=pi
+
+# do the trick with xargs to get rid of the ending blank
+MY_IP=$(hostname -I|xargs)
+
+#cat ${SETTINGS}   | grep '"ips"' |awk -F':' '{print $2}' | sed 's/"//g' | sed "s/,/\\n/g" | while read ip
+cat ../settings/settings.json |grep '"ips"'|awk -F':' '{print $2}' | sed 's/"//g' | sed "s/\\\\n/\\n/g" | while read ip
+do
+	if [[ "$ip" != "$MY_IP" && ! -z "$ip" ]];
+	then
+		echo "sync to $ip"
+		echo "rsync -av --delete ${SYNCSOURCE} ${SSH_USER}@${ip}:${SYNCDESTINATION}"
+		if [[ $hname == "raspberrypi" ]];
+		then
+               		rsync -a --delete ${SYNCSOURCE} ${SSH_USER}@${ip}:${SYNCDESTINATION}
+		else
+			# dummy
+			sleep 2
+		fi
+        fi
+done

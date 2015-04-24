@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# auf data/.ssh nicht vergessen!
+# data/ ist das homedirectory von www-data - dort wird auch .ssh erwartet!
+# im Normalfall wird das nicht gelöscht!
+#
+#
+
+sudo mount |grep -q "rasp_image/data"
+if [[ $? -eq 0 ]];
+then
+        sudo umount data
+        if [[ $? -gt 0 ]];
+        then
+                echo "FEHLER! kann nicht bundeln"
+                exit 1
+        fi
+fi
+sudo mount -oloop,offset=5431623680 liederliste_image.img data/
+sudo cp -a ../web/* data
+
+sudo umount data
+
+echo "fertig"
+

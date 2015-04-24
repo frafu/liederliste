@@ -1,0 +1,4 @@
+#!/bin/bash
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+# this script is called from user www-data -> so this user should have the correct rights
+cp -a ${DIR}/../reset/* ${DIR}/../generated/

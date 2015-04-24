@@ -1,0 +1,38 @@
+{
+    "backgroundColor": "#666666",
+    "align": "center",
+    "fontSize": "180",
+    "highlight": "text-decoration: underline;\nfont-weight: bold;\nbackground-color: #FFFFFF;",
+    "lineCount": "5",
+    "fontFamily": "Arial, Arial, Helvetica, sans-serif",
+    "lines": [
+        {
+            "text": "aaa",
+            "color": "#000000",
+            "highlight": true
+        },
+        {
+            "color": "#000000",
+            "text": "zeile 2",
+            "highlight": false
+        },
+        {
+            "color": "#000000",
+            "text": "zeile 3",
+            "highlight": false
+        },
+        {
+            "color": "#000000",
+            "text": "zeile 4",
+            "highlight": false
+        },
+        {
+            "color": "#000000",
+            "text": "zeile 5",
+            "highlight": false
+        }
+    ],
+    "md5sum": "fe8c2c3f880c2f2b9f6e036ba54e2a9a",
+    "textAlign": "left",
+    "ips": "192.168.0.17\n192.168.0.19"
+}

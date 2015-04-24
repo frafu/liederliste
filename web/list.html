@@ -1,0 +1,79 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <!-- zur sicherheit alle 600 Sekunden neu laden -->
+    <meta http-equiv="refresh" content="600; URL=list.html"/>
+
+    <style type="text/css">
+        body {
+            margin: 0px;
+            padding:0px;
+            overflow: hidden;
+        }
+
+        .content {
+            height: 1900px;
+            width: 100%;
+        }
+            table {
+            width: 100%;
+            height: 1900px;
+        }
+        td.aahighlight {
+            background-color: #abc;
+            border: 5px solid red;
+            text-decoration: underline;
+        }
+
+    </style>
+    <script src="js/jquery-2.1.3.min.js"></script>
+</head>
+<body>
+<div class="content" data-md5sum="">
+    <!-- hier wird der table herein gerendert-->
+    <table>
+    </table>
+</div>
+</body>
+<script type="text/javascript">
+    function loadTable() {
+        setTimeout(loadTable, 5000)
+        $.ajax("settings/settings.json", {
+            cache: false,
+            success: function(data) {
+                if(data.md5sum != $('.content').data('md5sum')) {
+                    $('.content').data('md5sum', data.md5sum)
+                    console.log("refresh")
+                    var table=""
+                    $.each(data.lines, function(idx, item) {
+                        if(item.text != null && item.text !="") {
+                            var highlight = (item.highlight == true)?"highlight":"";
+                            table += "<tr><td class='" + highlight + "' style='color: " + item.color + ";'>" + item.text.replace(/ /g, '&nbsp;') + "</td>"
+                        }
+                    })
+
+                    $('body').css("background-color", data.backgroundColor)
+                    $('body').css("font-family", data.fontFamily)
+                    // remove table and add new
+                    $('table').children().remove()
+                    $('table').append(table)
+
+                    // set highlight style
+                    $('td.highlight').attr("style", $('td.highlight').attr('style') + data.highlight)
+
+                    // set td align
+                    $('table td').css("text-align", data.align)
+                    $('table').css("font-size", data.fontSize+"px")
+                }
+            },
+            error: function() {
+                // in case of error reload complete page
+                location.reload()
+            }
+        })
+    }
+    $(document).ready(function() {
+        loadTable();
+    })
+</script>
+</html>

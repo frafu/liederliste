@@ -1,0 +1,9 @@
+sudo umount data
+sudo umount root
+
+sudo mount -oloop,offset=62914560 liederliste_image.img root/
+
+sudo mount -oloop,offset=5431623680 liederliste_image.img data/
+
+#sudo mount -oloop,offset=4194304 liederliste_image.img boot/
+

@@ -1,0 +1,41 @@
+#!/bin/bash
+#
+# Dieses script wird am besten in /etc/rc.local eingetragen
+# Es generiert eine start.html seite die die IP Adresse anzeigt
+# und nach 30 Sekunden zur Liederliste weiterspringt.
+#
+#
+
+DESTINATION=/var/www/start.html
+sudo touch $DESTINATION
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+MY_IP=$(hostname -I)
+MY_MAC=$(ifconfig wlan0 |grep HWaddr |awk '{print $5}')
+sudo chown pi:pi $DESTINATION
+
+sudo cat ${DIR}/start.template | sed "s/MY_IP/$MY_IP/g" > $DESTINATION
+sudo sed -i "s/MY_MAC/${MY_MAC}/g" $DESTINATION
+if [[ "$MY_IP" == "" ]];
+then
+	sudo sed -i 's/<meta.*URL.*$//g' $DESTINATION
+	sudo sed -i 's/<h1.*/<h1 style="color:red">FEHLER<\/h1>/g' $DESTINATION
+	sudo sed -i "s/<p.*//g" $DESTINATION
+	sudo sed -i "s/<\/body.*//g" $DESTINATION
+	sudo echo   '<p style="color:red;">Ein Fehler ist aufgetreten! Das Gerät kann sich nicht im Netzwerk registrieren. Mögliche Fehler: <ul><li>Kein WLAN Dongle im Gerät</li><li>Kein WLAN verfügbar</li><li>Falsches WLAN verfügbar</li></ul></p>' >> $DESTINATION
+	sudo echo '<p>Fehler bereinigen und neu starten</p>' >> $DESTINATION
+	sudo echo '</body>' >> $DESTINATION
+	
+fi
+
+
+#
+#####################################################
+# wenn keine list.html existiert, diese auch erzeugen
+#
+DESTINATION=/var/www/generated/list.html
+if [[ ! -e $DESTINATION ]]
+then
+    cat ${DIR}/start.template | sed "s/MY_IP/$MY_IP/g" > $DESTINATION
+    sudo chown pi:pi $DESTINATION
+fi
